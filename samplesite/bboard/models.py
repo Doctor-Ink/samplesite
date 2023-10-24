@@ -2,19 +2,18 @@ from django.db import models
 
 
 class BB(models.Model):
-    KINDS = [
-        [None, 'Выберите тип публикуемого объявления'],
-        ['b', 'Куплю'],
-        ['s', 'Продам'],
-        ['c', 'Обменяю'],
-    ]
+    class Kinds(models.TextChoices):
+        BUY = 'b', 'Куплю'
+        SELL = 's', 'Продам',
+        EXCHANGE = 'c', 'Обменяю'
+        RENT = 'r'
 
     title = models.CharField(max_length=50, verbose_name='Товар')
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена')
     published = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
     rubric = models.ForeignKey('Rubric', null=True, on_delete=models.PROTECT, verbose_name='Рубрика')
-    kind = models.CharField(max_length=1, choices=KINDS, blank=True, verbose_name='Тип')
+    kind = models.CharField(max_length=1, choices=Kinds.choices, default=Kinds.SELL, verbose_name='Тип')
 
     class Meta:
         verbose_name_plural = 'Объявления'
